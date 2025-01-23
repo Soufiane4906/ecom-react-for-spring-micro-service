@@ -1,34 +1,18 @@
+// src/components/BillDetails/BillDetails.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {
-    Card,
-    CardContent,
-    Typography,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
-    Snackbar,
-    Alert,
-    CircularProgress,
-    IconButton,
-    Box
+    Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+    Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar, Alert, CircularProgress,
+    IconButton, Box
 } from '@mui/material';
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import { CSVLink } from 'react-csv';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import './BillDetails.css'; // Importez le fichier CSS
 
 const BillDetails: React.FC = () => {
     const [bill, setBill] = useState<any>(null);
@@ -112,19 +96,9 @@ const BillDetails: React.FC = () => {
     if (!bill) return <div>Loading...</div>;
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '20px',
-                maxWidth: '1200px',
-                margin: '0 auto',
-            }}
-        >
-            <Card sx={{ width: '100%', mb: 3 }}>
-                <CardContent>
+        <Box className="bill-details">
+            <Card className="card">
+                <CardContent className="card-content">
                     <Typography variant="h5" gutterBottom>Bill number: {id}</Typography>
                     <Typography>Bill ID: {bill.id}</Typography>
                     <Typography>Bill Date: {new Date(bill.createdAt).toLocaleDateString()}</Typography>
@@ -134,15 +108,7 @@ const BillDetails: React.FC = () => {
                 </CardContent>
             </Card>
 
-            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                {/*<Button*/}
-                {/*    variant="contained"*/}
-                {/*    color="primary"*/}
-                {/*    onClick={() => handleOpenDialog()}*/}
-                {/*    sx={{ borderRadius: '8px', textTransform: 'none' }}*/}
-                {/*>*/}
-                {/*    Add Product*/}
-                {/*</Button>*/}
+            <Box className="export-buttons">
                 <Button
                     variant="contained"
                     color="primary"
@@ -172,9 +138,9 @@ const BillDetails: React.FC = () => {
                 </CSVLink>
             </Box>
 
-            <TableContainer component={Paper} sx={{ width: '100%', mb: 3 }}>
-                <Table>
-                    <TableHead>
+            <TableContainer component={Paper} className="table-container">
+                <Table className="table">
+                    <TableHead className="table-head">
                         <TableRow>
                             <TableCell>Product ID</TableCell>
                             <TableCell>Product Name</TableCell>
@@ -184,7 +150,7 @@ const BillDetails: React.FC = () => {
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
+                    <TableBody className="table-body">
                         {bill.productItems.map((item: any) => (
                             <TableRow key={item.product.id}>
                                 <TableCell>{item.product.id}</TableCell>
@@ -192,7 +158,7 @@ const BillDetails: React.FC = () => {
                                 <TableCell>{item.price.toFixed(2)}</TableCell>
                                 <TableCell>{item.quantity}</TableCell>
                                 <TableCell>{item.amount.toFixed(2)}</TableCell>
-                                <TableCell>
+                                <TableCell className="actions">
                                     <IconButton
                                         color="primary"
                                         onClick={() => handleOpenDialog(item)}

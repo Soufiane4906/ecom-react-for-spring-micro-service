@@ -1,14 +1,14 @@
 // src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Customers from './components/Customers';
-import Bills from './components/Bills';
-import BillDetails from './components/BillDetails';
-import Products from './components/Products';
-import Home from './components/Home';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import Layout from './components/Layout';
+import Customers from './components/Customers/Customers.tsx';
+import Bills from './components/Bills/Bills.tsx';
+import BillDetails from './components/BillDetails/BillDetails.tsx';
+import Products from './components/Products/Products.tsx';
+import Home from './components/Home/Home.tsx';
+import Login from './components/Login/Login.tsx';
+import Dashboard from './components/Dashboard/Dashboard.tsx';
+import Layout from './components/Layout/Layout.tsx';
 
 const isAuthenticated = () => {
     return !!localStorage.getItem('token');

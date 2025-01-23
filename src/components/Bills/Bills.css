@@ -1,0 +1,36 @@
+/* src/components/Bills/Bills.css */
+.bills {
+    padding: 20px;
+}
+
+.bills h4 {
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.bills .table-container {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.bills .table-head {
+    background-color: #1976d2;
+}
+
+.bills .table-head th {
+    color: white;
+    font-weight: bold;
+}
+
+.bills .table-body tr:hover {
+    background-color: #f5f5f5;
+}
+
+.bills .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.bills .actions button {
+    text-transform: none;
+}

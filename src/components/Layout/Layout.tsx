@@ -1,7 +1,7 @@
 // src/components/Layout.tsx
 import React from 'react';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import Navbar from '../Navbar/Navbar.tsx';
+import Footer from '../Footer/Footer.tsx';
 import { Container } from '@mui/material';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

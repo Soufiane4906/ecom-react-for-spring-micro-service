@@ -1,9 +1,10 @@
-// src/components/Navbar.tsx
+// src/components/Navbar/Navbar.tsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Box, useMediaQuery, useTheme, Avatar, Menu, MenuItem } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
-import logo from '../assets/logo.png'; // Importez le logo
+import logo from '../../assets/logo.png';
+import './Navbar.css'; // Importez le fichier CSS
 
 interface User {
     name: string;
@@ -18,7 +19,6 @@ const Navbar: React.FC = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [user, setUser] = React.useState<User | null>(null);
 
-    // Récupérer les informations de l'utilisateur à partir du token
     React.useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -41,19 +41,11 @@ const Navbar: React.FC = () => {
         setAnchorEl(null);
     };
 
-    // Couleur de la navbar en fonction du rôle
-    const navbarColor = user?.role === 'Admin' ? '#4caf50' : '#1976d2';
-
     return (
-        <AppBar position="static" sx={{ backgroundColor: navbarColor }}>
+        <AppBar position="static" className={`navbar ${user?.role === 'Admin' ? 'admin' : ''}`}>
             <Toolbar>
-                {/* Logo avec lien vers le tableau de bord */}
-                <Box
-                    component={Link}
-                    to="/dashboard"
-                    sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexGrow: 1 }}
-                >
-                    <img src={logo} alt="Logo" style={{ height: '40px', marginRight: '10px' }} />
+                <Box component={Link} to="/dashboard" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexGrow: 1 }}>
+                    <img src={logo} alt="Logo" className="logo" />
                     <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
                         Ecom Dashboard
                     </Typography>
@@ -62,29 +54,26 @@ const Navbar: React.FC = () => {
                 <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     {user && (
                         <>
-                            <Avatar sx={{ bgcolor: '#ffeb3b' }} onClick={handleMenuOpen}>
+                            <Avatar className="avatar" onClick={handleMenuOpen}>
                                 {user.name.charAt(0).toUpperCase()}
                             </Avatar>
                             <Menu
                                 anchorEl={anchorEl}
                                 open={Boolean(anchorEl)}
                                 onClose={handleMenuClose}
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                className="menu"
                             >
-                                <MenuItem>
+                                <MenuItem className="menu-item">
                                     <Typography variant="body1">{user.name}</Typography>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem className="menu-item">
                                     <Typography variant="body2">{user.email}</Typography>
                                 </MenuItem>
-                                <MenuItem>
+                                <MenuItem className="menu-item">
                                     <Typography variant="body2">Role: {user.role}</Typography>
                                 </MenuItem>
-                                <MenuItem onClick={handleLogout}>
-                                    <Typography variant="body2" color="error">
-                                        Logout
-                                    </Typography>
+                                <MenuItem className="menu-item logout" onClick={handleLogout}>
+                                    <Typography variant="body2">Logout</Typography>
                                 </MenuItem>
                             </Menu>
                             <Button color="inherit" component={Link} to="/products" sx={{ textTransform: 'none', fontSize: isMobile ? '14px' : '16px' }}>

@@ -1,0 +1,12 @@
+.layout-container {
+    background: linear-gradient(
+            225deg,
+            rgba(106, 17, 203, 0.05),
+            rgba(37, 117, 252, 0.05)
+    );
+    transition: all 0.4s ease;
+}
+
+.layout-container:hover {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}

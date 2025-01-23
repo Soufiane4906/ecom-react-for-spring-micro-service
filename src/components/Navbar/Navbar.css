@@ -1,0 +1,32 @@
+/* src/components/Navbar/Navbar.css */
+.navbar {
+    background-color: #1976d2; /* Couleur par défaut */
+}
+
+.navbar.admin {
+    background-color: #4caf50; /* Couleur pour les administrateurs */
+}
+
+.navbar .logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar .avatar {
+    background-color: #ffeb3b; /* Couleur de l'avatar */
+    cursor: pointer;
+}
+
+.navbar .menu {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .menu-item {
+    color: #333;
+}
+
+.navbar .menu-item.logout {
+    color: #d32f2f; /* Couleur pour le bouton de déconnexion */
+}

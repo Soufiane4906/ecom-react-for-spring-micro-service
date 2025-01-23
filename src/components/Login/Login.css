@@ -1,0 +1,38 @@
+.login-container {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+            circle at center,
+            rgba(255,255,255,0.1) 0%,
+            transparent 70%
+    );
+    animation: magical-pulse 5s infinite alternate;
+}
+
+@keyframes magical-pulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.login-paper {
+    transition: all 0.4s ease;
+    transform-style: preserve-3d;
+}
+
+.login-paper:hover {
+    transform:
+            rotateX(5deg)
+            rotateY(-5deg)
+            scale(1.02);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+}
