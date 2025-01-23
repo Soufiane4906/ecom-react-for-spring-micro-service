@@ -1,3 +1,4 @@
+// src/components/Products.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -6,7 +7,7 @@ import {
 } from '@mui/material';
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
-
+import { jwtDecode } from 'jwt-decode'; // Pour décoder le token JWT
 const Products: React.FC = () => {
     const [products, setProducts] = useState<any[]>([]);
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -17,8 +18,18 @@ const Products: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(''); // Pour le filtre par catégorie
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [purchasedProducts, setPurchasedProducts] = useState<Set<number>>(new Set());
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // Vérifier si l'utilisateur est un administrateur
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            setIsAdmin(decodedToken.email === 'anibasoufiane2001@gmail.com');
+        }
+    }, []);
 
     // Fetch products with pagination
     useEffect(() => {
@@ -166,14 +177,16 @@ const Products: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
                     Product Management
                 </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleOpenDialog()}
-                    sx={{ borderRadius: '8px', textTransform: 'none' }}
-                >
-                    Add Product
-                </Button>
+                {isAdmin && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpenDialog()}
+                        sx={{ borderRadius: '8px', textTransform: 'none' }}
+                    >
+                        Add Product
+                    </Button>
+                )}
             </Box>
 
             {/* Search Bar and Category Filter */}
@@ -268,18 +281,21 @@ const Products: React.FC = () => {
                                         <TableCell>{product.price}</TableCell>
                                         <TableCell>{product.quantity}</TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={() => handleOpenDialog(product)} sx={{ '&:hover': { bgcolor: '#e3f2fd' } }}>
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton color="error" onClick={() => handleDeleteProduct(product.id)} sx={{ '&:hover': { bgcolor: '#ffebee' }, ml: 1 }}>
-                                                <Delete />
-                                            </IconButton>
+                                            {isAdmin && (
+                                                <>
+                                                    <IconButton color="primary" onClick={() => handleOpenDialog(product)}>
+                                                        <Edit />
+                                                    </IconButton>
+                                                    <IconButton color="error" onClick={() => handleDeleteProduct(product.id)}>
+                                                        <Delete />
+                                                    </IconButton>
+                                                </>
+                                            )}
                                             <Button
                                                 variant="contained"
                                                 color="success"
-                                                onClick={() => handlePurchase(product.id, 1)} // Assuming quantity is 1 for simplicity
-                                                disabled={product.quantity <= 0 || purchasedProducts.has(product.id)} // Disable if quantity is 0 or less or already purchased
-                                                sx={{ ml: 2, textTransform: 'none', bgcolor: '#4caf50', '&:hover': { bgcolor: '#388e3c' } }}
+                                                onClick={() => handlePurchase(product.id, 1)}
+                                                disabled={product.quantity <= 0 || purchasedProducts.has(product.id)}
                                             >
                                                 Buy
                                             </Button>

@@ -1,3 +1,4 @@
+// src/components/Customers.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +9,7 @@ import {
 } from '@mui/material';
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
-
+import { jwtDecode } from 'jwt-decode'; // Pour décoder le token JWT
 const Customers: React.FC = () => {
     const [customers, setCustomers] = useState<any[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
@@ -22,6 +23,16 @@ const Customers: React.FC = () => {
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const navigate = useNavigate();
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // Vérifier si l'utilisateur est un administrateur
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            setIsAdmin(decodedToken.email === 'anibasoufiane2001@gmail.com');
+        }
+    }, []);
 
     // Fetch customers with pagination
     useEffect(() => {
@@ -145,14 +156,16 @@ const Customers: React.FC = () => {
                 <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
                     Customer Management
                 </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleOpenDialog()}
-                    sx={{ borderRadius: '8px', textTransform: 'none' }}
-                >
-                    Add Customer
-                </Button>
+                {isAdmin && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpenDialog()}
+                        sx={{ borderRadius: '8px', textTransform: 'none' }}
+                    >
+                        Add Customer
+                    </Button>
+                )}
             </Box>
 
             {/* Search Bar with Enhanced Design */}
@@ -230,31 +243,20 @@ const Customers: React.FC = () => {
                                     <TableCell sx={{ fontWeight: '500' }}>{customer.name}</TableCell>
                                     <TableCell>{customer.email}</TableCell>
                                     <TableCell>
-                                        <IconButton
-                                            color="primary"
-                                            onClick={() => handleOpenDialog(customer)}
-                                            sx={{ '&:hover': { bgcolor: '#e3f2fd' } }}
-                                        >
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton
-                                            color="error"
-                                            onClick={() => handleDeleteCustomer(customer.id)}
-                                            sx={{ '&:hover': { bgcolor: '#ffebee' }, ml: 1 }}
-                                        >
-                                            <Delete />
-                                        </IconButton>
+                                        {isAdmin && (
+                                            <>
+                                                <IconButton color="primary" onClick={() => handleOpenDialog(customer)}>
+                                                    <Edit />
+                                                </IconButton>
+                                                <IconButton color="error" onClick={() => handleDeleteCustomer(customer.id)}>
+                                                    <Delete />
+                                                </IconButton>
+                                            </>
+                                        )}
                                         <Button
                                             variant="outlined"
                                             color="secondary"
                                             onClick={() => handleGetBills(customer.id)}
-                                            sx={{
-                                                ml: 2,
-                                                borderRadius: '6px',
-                                                textTransform: 'none',
-                                                borderWidth: '2px',
-                                                '&:hover': { borderWidth: '2px' }
-                                            }}
                                         >
                                             View Bills
                                         </Button>

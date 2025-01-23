@@ -1,5 +1,7 @@
+// src/components/Layout.tsx
 import React from 'react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import { Container } from '@mui/material';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -9,6 +11,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Container sx={{ flex: 1, paddingTop: '20px', paddingBottom: '20px' }}>
                 {children}
             </Container>
+            <Footer />
         </div>
     );
 };

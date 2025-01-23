@@ -1,71 +1,93 @@
-#root {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
+/* Additional styling enhancements for the Ecom Dashboard */
+:root {
+  /* Existing color palette with some additional variations */
+  --primary-color-light: #4D9FEC;
+  --primary-color-dark: #0D47A1;
+  --secondary-color-light: #81C784;
+  --secondary-color-dark: #2E7D32;
+  --text-color-muted: #6c757d;
+  --border-radius-default: 12px;
+  --box-shadow-default: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Smooth transitions for interactive elements */
+a, button, .transition-smooth {
+  transition: all 0.3s ease-in-out;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Card-like component styling */
 .card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-/* Responsive layout for the app */
-.container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  border-radius: var(--border-radius-default);
+  box-shadow: var(--box-shadow-default);
+  background-color: #fff;
   padding: 20px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin-bottom: 20px;
 }
 
-/* Responsive table */
-.table-container {
-  overflow-x: auto;
+/* Hover effects for interactive elements */
+.card:hover,
+button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
+/* Responsive typography */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
   }
 
-  .table-container {
-    width: 100%;
+  h1 {
+    font-size: 2.4em;
   }
+}
+
+/* Subtle background patterns */
+body {
+  background-image: linear-gradient(
+          to right,
+          rgba(25, 118, 210, 0.05),
+          rgba(76, 175, 80, 0.05)
+  );
+}
+
+/* Enhanced form and input styles */
+input,
+.MuiTextField-root {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+.MuiTextField-root:focus-within {
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+}
+
+/* Animated loading or skeleton states */
+@keyframes pulse {
+  0% {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.loading-skeleton {
+  animation: pulse 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Role-based color highlights */
+.role-admin {
+  background-color: var(--secondary-color-light) !important;
+  color: #fff !important;
+}
+
+.role-user {
+  background-color: var(--primary-color-light) !important;
+  color: #fff !important;
 }

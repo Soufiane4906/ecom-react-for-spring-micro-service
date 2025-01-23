@@ -83,14 +83,14 @@ const Bills: React.FC = () => {
                 Bills for Customer ID: {customerId}
             </Typography>
 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleOpenDialog()}
-                sx={{ mb: 2, borderRadius: '8px', textTransform: 'none' }}
-            >
-                Add Bill
-            </Button>
+            {/*<Button*/}
+            {/*    variant="contained"*/}
+            {/*    color="primary"*/}
+            {/*    onClick={() => handleOpenDialog()}*/}
+            {/*    sx={{ mb: 2, borderRadius: '8px', textTransform: 'none' }}*/}
+            {/*>*/}
+            {/*    Add Bill*/}
+            {/*</Button>*/}
 
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
