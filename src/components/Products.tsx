@@ -18,12 +18,29 @@ const Products: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(''); // Pour le filtre par catégorie
+    const [purchasedProducts, setPurchasedProducts] = useState<Set<number>>(new Set());
 
     // Fetch products with pagination
     useEffect(() => {
         fetchProducts();
     }, [currentPage, selectedCategory]);
 
+    useEffect(() => {
+        const fetchPurchasedProducts = async () => {
+            const purchased = new Set<number>();
+            for (const product of products) {
+                if (selectedCategory === '' || product.category === selectedCategory) {
+                    const response = await axios.get(`http://localhost:8080/BILLING-SERVICE/products/${product.id}/isPurchased`);
+                    if (response.data) {
+                        purchased.add(product.id);
+                    }
+                }
+            }
+            setPurchasedProducts(purchased);
+        };
+
+        fetchPurchasedProducts();
+    }, [products, selectedCategory]); // Ajoutez selectedCategory comme dépendance
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -32,7 +49,20 @@ const Products: React.FC = () => {
                 url = `http://localhost:8080/INVENTORY-SERVICE/products/search/byCategory?category=${selectedCategory}&page=${currentPage - 1}&size=${itemsPerPage}`;
             }
             const response = await axios.get(url);
-            setProducts(response.data._embedded.products);
+            const fetchedProducts = response.data._embedded.products;
+
+            // Mettre à jour les produits
+            setProducts(fetchedProducts);
+
+            // Synchroniser purchasedProducts avec les produits filtrés
+            const updatedPurchasedProducts = new Set<number>();
+            fetchedProducts.forEach((product: any) => {
+                if (purchasedProducts.has(product.id)) {
+                    updatedPurchasedProducts.add(product.id);
+                }
+            });
+            setPurchasedProducts(updatedPurchasedProducts);
+
             setTotalPages(response.data.page.totalPages);
         } catch (error) {
             setErrorMessage('Failed to fetch products');
@@ -105,6 +135,20 @@ const Products: React.FC = () => {
             .catch(error => console.error(error));
     };
 
+    const handlePurchase = async (id: number, quantity: number) => {
+        try {
+            const response = await axios.post(`http://localhost:8080/BILLING-SERVICE/products/${id}/purchase?quantity=${quantity}`);
+            if (response.status === 200) {
+                setErrorMessage('Purchase successful');
+                fetchProducts(); // Refresh the product list
+            } else {
+                setErrorMessage('Purchase failed');
+            }
+        } catch (error) {
+            setErrorMessage('Purchase failed: ' + error.message);
+        }
+    };
+
     // Handle pagination
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
@@ -115,7 +159,6 @@ const Products: React.FC = () => {
         setSelectedCategory(category);
         setCurrentPage(1); // Réinitialiser la pagination
     };
-
     return (
         <Box sx={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
             {/* Header Section */}
@@ -196,7 +239,7 @@ const Products: React.FC = () => {
                 <TableContainer component={Paper} sx={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
                     <Table sx={{ minWidth: 650 }}>
                         <TableHead sx={{ bgcolor: '#1976d2' }}>
-                            <TableRow>
+                            <TableRow   >
                                 <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>ID</TableCell>
                                 <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>Name</TableCell>
                                 <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1rem' }}>Price</TableCell>
@@ -206,14 +249,20 @@ const Products: React.FC = () => {
                         </TableHead>
                         <TableBody>
                             {products.length === 0 ? (
-                                <TableRow>
+                                <TableRow  >
                                     <TableCell colSpan={5} align="center">
                                         <Typography variant="h6">No products found.</Typography>
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 products.map(product => (
-                                    <TableRow key={product.id} sx={{ '&:nth-of-type(odd)': { bgcolor: '#fafafa' }, '&:hover': { bgcolor: '#f0f0f0' }, transition: 'background-color 0.3s' }}>
+                                    <TableRow key={product.id}
+                                sx={{
+                                '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
+                                '&:hover': { bgcolor: '#f0f0f0' },
+                                transition: 'background-color 0.3s',
+                                bgcolor: purchasedProducts.has(product.id) ? '#ffebee' : 'inherit' // Change background color if purchased
+                            }}>
                                         <TableCell>{product.id}</TableCell>
                                         <TableCell>{product.name}</TableCell>
                                         <TableCell>{product.price}</TableCell>
@@ -225,6 +274,15 @@ const Products: React.FC = () => {
                                             <IconButton color="error" onClick={() => handleDeleteProduct(product.id)} sx={{ '&:hover': { bgcolor: '#ffebee' }, ml: 1 }}>
                                                 <Delete />
                                             </IconButton>
+                                            <Button
+                                                variant="contained"
+                                                color="success"
+                                                onClick={() => handlePurchase(product.id, 1)} // Assuming quantity is 1 for simplicity
+                                                disabled={product.quantity <= 0 || purchasedProducts.has(product.id)} // Disable if quantity is 0 or less or already purchased
+                                                sx={{ ml: 2, textTransform: 'none', bgcolor: '#4caf50', '&:hover': { bgcolor: '#388e3c' } }}
+                                            >
+                                                Buy
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
